@@ -13,10 +13,12 @@ import InventionOfTheDay from './components/InventionOfTheDay';
 import LoginPage from './components/LoginPage';
 import UserProfile from './components/UserProfile';
 import UserStats from './components/UserStats';
+import Leaderboard from './components/Leaderboard';
+import AdminDashboard from './components/AdminDashboard';
 import { Language } from './types';
 import { useUserData } from './hooks/useUserData';
 
-type ActiveView = 'home' | 'discovery' | 'build' | 'whatif' | 'chat' | 'timeline' | 'retell' | 'challenge';
+type ActiveView = 'home' | 'discovery' | 'build' | 'whatif' | 'chat' | 'timeline' | 'retell' | 'challenge' | 'leaderboard' | 'admin';
 
 function App() {
   const [activeView, setActiveView] = useState<ActiveView>('home');
@@ -71,6 +73,36 @@ function App() {
         return <RetellMode language={currentLanguage} onBack={() => setActiveView('home')} />;
       case 'challenge':
         return <InventChallenge language={currentLanguage} onBack={() => setActiveView('home')} />;
+      case 'leaderboard':
+        return (
+          <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8">
+            <div className="max-w-6xl mx-auto">
+              <motion.button
+                onClick={() => setActiveView('home')}
+                className="flex items-center space-x-2 px-4 py-2 text-gray-600 hover:text-purple-600 transition-colors mb-8"
+                whileHover={{ x: -5 }}
+              >
+                <span>← Back to Home</span>
+              </motion.button>
+              <Leaderboard currentUser={currentUser} />
+            </div>
+          </div>
+        );
+      case 'admin':
+        return (
+          <div className="min-h-screen py-8 px-4 sm:px-6 lg:px-8">
+            <div className="max-w-7xl mx-auto">
+              <motion.button
+                onClick={() => setActiveView('home')}
+                className="flex items-center space-x-2 px-4 py-2 text-gray-600 hover:text-purple-600 transition-colors mb-8"
+                whileHover={{ x: -5 }}
+              >
+                <span>← Back to Home</span>
+              </motion.button>
+              <AdminDashboard />
+            </div>
+          </div>
+        );
       default:
         return (
           <div>
@@ -132,6 +164,18 @@ function App() {
           />
         )}
       </AnimatePresence>
+
+      {/* Admin Access (Demo - in production this would be role-based) */}
+      {currentUser.username === 'Demo Explorer' && (
+        <motion.button
+          onClick={() => setActiveView('admin')}
+          className="fixed bottom-4 left-4 px-4 py-2 bg-purple-600 text-white rounded-xl shadow-lg hover:bg-purple-700 transition-colors z-40"
+          whileHover={{ scale: 1.05 }}
+          whileTap={{ scale: 0.95 }}
+        >
+          Admin Dashboard
+        </motion.button>
+      )}
     </div>
   );
 }
